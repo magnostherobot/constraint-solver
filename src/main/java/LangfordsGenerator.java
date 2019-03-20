@@ -1,6 +1,6 @@
 import org.jetbrains.annotations.NotNull;
 
-public class LangfordsGenerator {
+class LangfordsGenerator {
 
     public static void main(@NotNull String[] args) {
         if (args.length != 2) {

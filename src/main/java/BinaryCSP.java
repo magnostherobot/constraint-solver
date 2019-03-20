@@ -1,52 +1,29 @@
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class BinaryCSP {
-    private BinaryTuple[] domainBounds;
-    private ArrayList<BinaryConstraint> constraints;
+class BinaryCSP {
+    private final List<Variable> variables;
+    private final List<Constraint> constraints;
 
-    public BinaryCSP(BinaryTuple[] db, ArrayList<BinaryConstraint> c) {
-        domainBounds = db;
-        constraints = c;
+    public BinaryCSP(List<Variable> variables, List<Constraint> constraints) {
+        this.variables = variables;
+        this.constraints = constraints;
     }
 
     @NotNull
     public String toString() {
         StringBuilder result = new StringBuilder()
-                .append("CSP:\n");
+                .append(this.variables.size());
 
-        for (int i = 0; i < domainBounds.length; i++) {
-            result.append("Var ").append(i).append(": ")
-                    .append(domainBounds[i].getLhs()).append("..")
-                    .append(domainBounds[i].getRhs()).append("\n");
+        for (Variable variable : this.variables) {
+            result.append(variable.getDomain().toSimpleString()).append("\n");
         }
 
-        for (BinaryConstraint bc : constraints) {
-            result.append(bc).append("\n");
+        for (Constraint constraint : this.constraints) {
+            result.append(constraint);
         }
 
         return result.toString();
-    }
-
-    @Contract(pure = true)
-    public int getNoVariables() {
-        return domainBounds.length;
-    }
-
-    @Contract(pure = true)
-    public int getLowerBound(int varIndex) {
-        return domainBounds[varIndex].getLhs();
-    }
-
-    @Contract(pure = true)
-    public int getUpperBound(int varIndex) {
-        return domainBounds[varIndex].getRhs();
-    }
-
-    @Contract(pure = true)
-    public ArrayList<BinaryConstraint> getConstraints() {
-        return constraints;
     }
 }

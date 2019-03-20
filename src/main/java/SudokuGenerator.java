@@ -1,6 +1,6 @@
 import org.jetbrains.annotations.NotNull;
 
-public class SudokuGenerator {
+class SudokuGenerator {
 
     /**
      * The constraint is always the same != on 1..9 Only the

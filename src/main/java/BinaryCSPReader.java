@@ -4,12 +4,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A reader tailored for binary extensional CSPs.
  * It is created from a FileReader and a StreamTokenizer
  */
-public class BinaryCSPReader {
+class BinaryCSPReader {
     private CSPStreamTokenizer in;
 
     public static void main(@NotNull String[] args)
@@ -39,30 +40,38 @@ public class BinaryCSPReader {
         FileReader inFR = new FileReader(fn);
         in = new CSPStreamTokenizer(inFR);
 
-        int n = in.nextTokenInt();
-        BinaryTuple[] domainBounds = new BinaryTuple[n];
+        List<Variable> variables = readVariables();
+        List<Constraint> constraints = readBinaryConstraints();
 
-        for (int i = 0; i < n; i++) {
-            int lowerBound = in.nextTokenInt();
-            in.nextTokenAssertChar(',');
-            int upperBound = in.nextTokenInt();
-            domainBounds[i] = new BinaryTuple(lowerBound, upperBound);
-        }
-
-        ArrayList<BinaryConstraint> constraints = readBinaryConstraints();
-        BinaryCSP csp = new BinaryCSP(domainBounds, constraints);
+        BinaryCSP csp = new BinaryCSP(variables, constraints);
 
         inFR.close();
         return csp;
     }
 
+    private List<Variable> readVariables() throws IOException, ParseException {
+
+        int n = in.nextTokenInt();
+        List<Variable> variables = new ArrayList<>(n);
+
+        for (int i = 0; i < n; ++i) {
+            int lowerBound = in.nextTokenInt();
+            in.nextTokenAssertChar(',');
+            int upperBound = in.nextTokenInt();
+
+            variables.add(new Variable(i, lowerBound, upperBound));
+        }
+
+        return variables;
+    }
+
     /**
      * Reads a list of binary constraints.
      */
-    private ArrayList<BinaryConstraint> readBinaryConstraints()
+    private List<Constraint> readBinaryConstraints()
             throws IOException, ParseException {
 
-        ArrayList<BinaryConstraint> constraints = new ArrayList<>();
+        List<Constraint> constraints = new ArrayList<>();
 
         // 'c' or EOF
         in.nextToken();
@@ -74,20 +83,21 @@ public class BinaryCSPReader {
 
             in.nextTokenAssertChar(',');
             int rhs = in.nextTokenInt();
+            Constraint constraint = new Constraint(lhs, rhs);
 
             in.nextTokenAssertChar(')');
 
-            ArrayList<BinaryTuple> tuples = new ArrayList<>();
             for (in.nextToken(); in.ttype != CSPStreamTokenizer.TT_EOF
                     && in.ttype != 'c'; in.nextToken()) {
 
-                int tuple_lhs = in.tokenInt();
+                int tupleLhs = in.tokenInt();
                 in.nextTokenAssertChar(',');
-                int tuple_rhs = in.nextTokenInt();
-                tuples.add(new BinaryTuple(tuple_lhs, tuple_rhs));
+                int tupleRhs = in.nextTokenInt();
+
+                constraint.addPair(tupleLhs, tupleRhs);
             }
 
-            constraints.add(new BinaryConstraint(lhs, rhs, tuples));
+            constraints.add(constraint);
         }
 
         return constraints;

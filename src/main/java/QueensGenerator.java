@@ -1,6 +1,6 @@
 import org.jetbrains.annotations.NotNull;
 
-public class QueensGenerator {
+class QueensGenerator {
     public static void main(@NotNull String[] args) {
         if (args.length != 1) {
             System.out.println("Usage: java QueensGenerator <n>");

@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.text.ParseException;
 
-public class CSPStreamTokenizer extends StreamTokenizer {
+class CSPStreamTokenizer extends StreamTokenizer {
     public CSPStreamTokenizer(FileReader fr) {
         super(fr);
 
@@ -24,7 +24,7 @@ public class CSPStreamTokenizer extends StreamTokenizer {
         return result;
     }
 
-    public void tokenAssertType(int expected) throws ParseException {
+    private void tokenAssertType(int expected) throws ParseException {
         if (this.ttype != expected) {
             throw new ParseException(this.toString(), this.lineno());
         }
@@ -50,14 +50,14 @@ public class CSPStreamTokenizer extends StreamTokenizer {
         this.tokenAssertChar(expected);
     }
 
-    public void tokenAssertWord(String expected) throws ParseException {
+    private void tokenAssertWord(String expected) throws ParseException {
         this.tokenAssertType(TT_WORD);
         if (!expected.equals(this.sval)) {
             throw new ParseException(this.toString(), this.lineno());
         }
     }
 
-    public void nextTokenAssertString(String expected)
+    public void nextTokenAssertWord(String expected)
             throws IOException, ParseException {
 
         this.nextToken();
