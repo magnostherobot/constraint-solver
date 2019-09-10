@@ -1,4 +1,6 @@
 *.sw*
+src/main/resources/*.log
+target/
 
 # https://raw.githubusercontent.com/github/gitignore/master/Global/JetBrains.gitignore
 
